@@ -79,6 +79,18 @@ function(dd_common target)
         target_compile_definitions(${target} PRIVATE WIN32)
     endif()
 
+    # needed the moment you go past c++14. GdiplusPath.h in the windows sdk uses
+    # `byte` unqualified, and from c++17 that is ambiguous between the
+    # `unsigned char byte` typedef in rpcndr.h and std::byte out of <cstddef>:
+    #
+    #   GdiplusPath.h(145): error C2872: 'byte': ambiguous symbol
+    #
+    # it is an sdk header so there is nothing to fix at the call site, and this
+    # is the switch msvc provides for exactly this collision. DDUI is the one
+    # that trips it, through gdiplus in BitmapHelper, but it goes everywhere so
+    # the two do not disagree about whether std::byte exists.
+    target_compile_definitions(${target} PRIVATE _HAS_STD_BYTE=0)
+
     # /W3 = WarningLevel Level3, /permissive- = ConformanceMode, /sdl = SDLCheck.
     #
     # /Zc:wchar_t- is the one worth reading twice. it makes wchar_t a typedef for
