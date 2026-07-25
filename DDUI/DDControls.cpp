@@ -5475,10 +5475,13 @@ namespace DDUI
 
                 if (g_ctx.DWMActive)
                 {
-                    WCHAR* WindowsBuildStr;
-                    GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-                    int WindowsBuild = _wtoi(WindowsBuildStr);
-                    free(WindowsBuildStr);
+                    WCHAR* WindowsBuildStr = nullptr;
+                    int WindowsBuild = 0;
+                    if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+                    {
+                        WindowsBuild = _wtoi(WindowsBuildStr);
+                        free(WindowsBuildStr);
+                    }
                     int WindowsRev = GetRegistryValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\BuildLayers\\ShellCommon", L"BuildQfe");
                     if (WindowsBuild > 22000 || WindowsBuild == 22000 && WindowsRev >= 51)
                     {
@@ -5518,10 +5521,13 @@ namespace DDUI
                         {
                             _tsvSelectionMenu->Add(&_peHostInner, 1);
                             _peSelectionMenu->Add((Element**)&_tsvSelectionMenu, 1);
-                            WCHAR* WindowsBuildStr;
-                            GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-                            int WindowsBuild = _wtoi(WindowsBuildStr);
-                            free(WindowsBuildStr);
+                            WCHAR* WindowsBuildStr = nullptr;
+                            int WindowsBuild = 0;
+                            if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+                            {
+                                WindowsBuild = _wtoi(WindowsBuildStr);
+                                free(WindowsBuildStr);
+                            }
                             if (g_ctx.DWMActive && WindowsBuild >= 16299)
                             {
                                 BlurBackground(_wndSelectionMenu->GetHWND(), true, false, -1, nullptr);
@@ -7362,10 +7368,13 @@ namespace DDUI
 
                 if (g_ctx.DWMActive)
                 {
-                    WCHAR* WindowsBuildStr;
-                    GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-                    int WindowsBuild = _wtoi(WindowsBuildStr);
-                    free(WindowsBuildStr);
+                    WCHAR* WindowsBuildStr = nullptr;
+                    int WindowsBuild = 0;
+                    if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+                    {
+                        WindowsBuild = _wtoi(WindowsBuildStr);
+                        free(WindowsBuildStr);
+                    }
                     int WindowsRev = GetRegistryValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\BuildLayers\\ShellCommon", L"BuildQfe");
                     if (WindowsBuild > 22000 || WindowsBuild == 22000 && WindowsRev >= 51)
                     {
@@ -7405,10 +7414,13 @@ namespace DDUI
                         {
                             _tsvSelectionMenu->Add(&_peHostInner, 1);
                             _peSelectionMenu->Add((Element**)&_tsvSelectionMenu, 1);
-                            WCHAR* WindowsBuildStr;
-                            GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-                            int WindowsBuild = _wtoi(WindowsBuildStr);
-                            free(WindowsBuildStr);
+                            WCHAR* WindowsBuildStr = nullptr;
+                            int WindowsBuild = 0;
+                            if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+                            {
+                                WindowsBuild = _wtoi(WindowsBuildStr);
+                                free(WindowsBuildStr);
+                            }
                             if (g_ctx.DWMActive && WindowsBuild >= 16299)
                             {
                                 BlurBackground(_wndSelectionMenu->GetHWND(), true, false, -1, nullptr);
@@ -8308,10 +8320,13 @@ namespace DDUI
         _pDDNB->SetVisible(true);
         _pDDNB->EndDefer(keyN);
         _wnd->Host(_pDDNB);
-        WCHAR* WindowsBuildStr;
-        GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-        int WindowsBuild = _wtoi(WindowsBuildStr);
-        free(WindowsBuildStr);
+        WCHAR* WindowsBuildStr = nullptr;
+        int WindowsBuild = 0;
+        if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+        {
+            WindowsBuild = _wtoi(WindowsBuildStr);
+            free(WindowsBuildStr);
+        }
         int WindowsRev = GetRegistryValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\BuildLayers\\ShellCommon", L"BuildQfe");
         if (g_ctx.DWMActive)
         {

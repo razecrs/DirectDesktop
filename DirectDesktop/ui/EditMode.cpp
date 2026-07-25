@@ -1667,10 +1667,13 @@ namespace DirectDesktop
             //editbgwnd->ShowWindow(SW_SHOW);
             //editbgwnd->ShowWindow(SW_HIDE);
 
-            WCHAR* WindowsBuildStr;
-            GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-            int WindowsBuild = _wtoi(WindowsBuildStr);
-            free(WindowsBuildStr);
+            WCHAR* WindowsBuildStr = nullptr;
+            int WindowsBuild = 0;
+            if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+            {
+                WindowsBuild = _wtoi(WindowsBuildStr);
+                free(WindowsBuildStr);
+            }
             if (WindowsBuild >= 26002)
             {
                 HWND hWndProgman = FindWindowW(L"Progman", L"Program Manager");

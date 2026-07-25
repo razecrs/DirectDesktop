@@ -306,6 +306,7 @@ namespace DDUI
     bool GetRegistryStrValues(HKEY hKey, LPCWSTR path, LPCWSTR valueName, WCHAR** outStr)
     {
         if (!outStr) return false;
+        *outStr = nullptr;
 
         DWORD dwSize{};
         LONG lResult = RegGetValueW(hKey, path, valueName, RRF_RT_REG_SZ, nullptr, nullptr, &dwSize);
@@ -334,6 +335,7 @@ namespace DDUI
     bool GetRegistryBinValues(HKEY hKeyName, LPCWSTR path, LPCWSTR valueName, BYTE** outBytes)
     {
         if (!outBytes) return false;
+        *outBytes = nullptr;
 
         DWORD dwSize{};
         LONG lResult = RegGetValueW(hKeyName, path, valueName, RRF_RT_REG_BINARY, nullptr, nullptr, &dwSize);
@@ -480,10 +482,12 @@ namespace DDUI
         {
             if (wParam == SPI_SETFONTSMOOTHING)
             {
-                WCHAR* fontsmoothingStr;
-                GetRegistryStrValues(HKEY_CURRENT_USER, L"Control Panel\\Desktop", L"FontSmoothing", &fontsmoothingStr);
-                g_ctx.fontsmoothing = _wtoi(fontsmoothingStr);
-                free(fontsmoothingStr);
+                WCHAR* fontsmoothingStr = nullptr;
+                if (GetRegistryStrValues(HKEY_CURRENT_USER, L"Control Panel\\Desktop", L"FontSmoothing", &fontsmoothingStr))
+                {
+                    g_ctx.fontsmoothing = _wtoi(fontsmoothingStr);
+                    free(fontsmoothingStr);
+                }
             }
             BOOL bTemp;
             switch (wParam)
@@ -821,10 +825,12 @@ namespace DDUI
         g_ctx.menuAnim = bTemp;
         SystemParametersInfoW(SPI_GETTOOLTIPANIMATION, NULL, &bTemp, NULL);
         g_ctx.tooltipAnim = bTemp;
-        WCHAR* fontsmoothingStr;
-        GetRegistryStrValues(DDKey.GetHKeyName(), L"Control Panel\\Desktop", L"FontSmoothing", &fontsmoothingStr);
-        g_ctx.fontsmoothing = _wtoi(fontsmoothingStr);
-        free(fontsmoothingStr);
+        WCHAR* fontsmoothingStr = nullptr;
+        if (GetRegistryStrValues(DDKey.GetHKeyName(), L"Control Panel\\Desktop", L"FontSmoothing", &fontsmoothingStr))
+        {
+            g_ctx.fontsmoothing = _wtoi(fontsmoothingStr);
+            free(fontsmoothingStr);
+        }
         DDKey.SetPath(L"Software\\DirectDesktop\\Debug");
         g_ctx.animCoef = GetRegistryValues(DDKey.GetHKeyName(), DDKey.GetPath(), L"AnimationSpeed");
         g_ctx.AnimShiftKey = GetRegistryValues(DDKey.GetHKeyName(), DDKey.GetPath(), L"AnimationsShiftKey");

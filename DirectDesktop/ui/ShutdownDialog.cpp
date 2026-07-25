@@ -558,10 +558,13 @@ namespace DirectDesktop
         StringCchPrintfW(cBuffer, 64, cBuffer2, static_cast<int>((min(GetSystemMetricsForDpi(SM_CXSMICON, dpiAdjusted), GetSystemMetricsForDpi(SM_CYSMICON, dpiAdjusted))) * 0.375));
         stars->SetFont(cBuffer);
         TitlebarText->SetContentString(caption);
-        WCHAR* WindowsBuildStr;
-        GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-        int WindowsBuild = _wtoi(WindowsBuildStr);
-        free(WindowsBuildStr);
+        WCHAR* WindowsBuildStr = nullptr;
+        int WindowsBuild = 0;
+        if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+        {
+            WindowsBuild = _wtoi(WindowsBuildStr);
+            free(WindowsBuildStr);
+        }
         int WindowsRev = GetRegistryValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\BuildLayers\\ShellCommon", L"BuildQfe");
         BOOL value = TRUE;
         LPWSTR sheetName = (LPWSTR)L"shutdownstyle";

@@ -4702,10 +4702,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                       _In_ LPWSTR lpCmdLine,
                       _In_ int nCmdShow)
 {
-    WCHAR* WindowsBuildStr;
-    GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr);
-    int WindowsBuild = _wtoi(WindowsBuildStr);
-    free(WindowsBuildStr);
+    WCHAR* WindowsBuildStr = nullptr;
+    int WindowsBuild = 0;
+    if (GetRegistryStrValues(HKEY_LOCAL_MACHINE, L"SOFTWARE\\Microsoft\\Windows NT\\CurrentVersion", L"CurrentBuildNumber", &WindowsBuildStr))
+    {
+        WindowsBuild = _wtoi(WindowsBuildStr);
+        free(WindowsBuildStr);
+    }
     WCHAR title[64], content[128];
     if (WindowsBuild < 18362)
     {
