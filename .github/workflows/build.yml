@@ -47,3 +47,34 @@ jobs:
           name: msbuild-${{ matrix.configuration }}-${{ matrix.platform }}
           path: build/
           if-no-files-found: warn
+
+  # the optional cmake path. same compiler, same flags, just reachable without
+  # visual studio. msvc-dev-cmd is what puts cl.exe on PATH for the ninja
+  # generator the presets use.
+  cmake:
+    name: cmake x64-release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Set up MSVC environment
+        uses: ilammy/msvc-dev-cmd@v1
+        with:
+          arch: x64
+
+      - name: Configure
+        run: cmake --preset x64-release
+
+      - name: Build
+        run: cmake --build --preset x64-release
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: cmake-x64-release
+          path: out/build/x64-release/bin/
+          if-no-files-found: warn
