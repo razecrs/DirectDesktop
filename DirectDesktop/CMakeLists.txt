@@ -30,9 +30,16 @@ target_include_directories(DirectDesktop PRIVATE
 # looks like it was meant to gate is loaded at runtime anyway
 # (ui/SearchPage.cpp does LoadLibraryW(L"Everything64.dll")).
 
-# DDUI first, it pulls dui70 and duser through transitively.
+# dui70 and duser are listed explicitly, not just DDUI. DDUI links them PRIVATE,
+# which by design does not put them on a consumer's link line, and
+# DirectDesktop.cpp calls into DirectUI and DUser itself (InitThread,
+# RegisterAllControls, StartMessagePump, StrToID, AddLayeredRef and friends).
+# Leaving them off gets you 115 unresolved externals at link. This matches
+# AdditionalDependencies in DirectDesktop.vcxproj, which lists all three.
 target_link_libraries(DirectDesktop PRIVATE
     DDUI
+    dui70
+    duser
     ${DD_SYSTEM_LIBS})
 
 set_target_properties(DirectDesktop PROPERTIES
