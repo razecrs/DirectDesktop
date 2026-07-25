@@ -1,0 +1,49 @@
+name: build
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  msbuild:
+    name: msbuild ${{ matrix.configuration }} ${{ matrix.platform }}
+    runs-on: windows-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          # Only Release|x64 is built for now. DDUI.vcxproj declares its
+          # AdditionalDependencies (dui70.lib, duser.lib, UxTheme.lib, ...) solely
+          # under Release|x64, and DirectDesktop.vcxproj likewise only links
+          # DDUI.lib there, so the remaining configurations are not currently
+          # expected to link. Adding them here once that is fixed is a one-line
+          # change.
+          - configuration: Release
+            platform: x64
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          # Required. DirectDesktop/Include/dui70 is a submodule holding the
+          # DirectUI headers and the stub sources that produce dui70.lib; the
+          # build cannot succeed without it, and a plain clone skips it.
+          submodules: recursive
+
+      - name: Add MSBuild to PATH
+        uses: microsoft/setup-msbuild@v2
+
+      - name: Build solution
+        run: >
+          msbuild DirectDesktop.sln
+          /p:Configuration=${{ matrix.configuration }}
+          /p:Platform=${{ matrix.platform }}
+          /m
+
+      - name: Upload build output
+        uses: actions/upload-artifact@v4
+        with:
+          name: msbuild-${{ matrix.configuration }}-${{ matrix.platform }}
+          path: build/
+          if-no-files-found: warn
