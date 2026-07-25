@@ -1118,9 +1118,15 @@ namespace DirectDesktop
 				if (pvDragStuff)
 				{
 					qmemcpy(&_shdi, pvDragStuff, sizeof(SHDRAGIMAGE) - 8);
-					void* pvBits;
+					void* pvBits = nullptr;
 					_Create32BitHBITMAP(&_shdi.hbmpDragImage, &_shdi.sizeDragImage, &hdcScreen, &_hdcDragImage, &pvBits);
-					if (_shdi.hbmpDragImage)
+					// pvBits is checked as well as the bitmap. _Create32BitHBITMAP
+					// leaves both untouched if CreateCompatibleDC fails, and
+					// hbmpDragImage at that point still holds whatever came out of
+					// the qmemcpy above, so it can be non-null while pvBits was
+					// never written. The CopyMemory below would then write through
+					// an uninitialized pointer.
+					if (_shdi.hbmpDragImage && pvBits)
 					{
 						_hbmpOld = (HBITMAP)SelectObject(_hdcDragImage, _shdi.hbmpDragImage);
 						RGBQUAD* pvStart = (RGBQUAD*)((BYTE*)pvDragStuff + sizeof(SHDRAGIMAGE) - 8);
